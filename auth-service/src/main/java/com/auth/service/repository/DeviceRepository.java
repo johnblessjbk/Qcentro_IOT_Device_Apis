@@ -36,4 +36,7 @@ public interface DeviceRepository extends JpaRepository<Device, UUID> {
          Pageable pageable);
      
      Page<Device> findByNameContaining(String name, Pageable pageable);
+     
+     @Query("SELECT COUNT(d) > 0 FROM Device d WHERE LOWER(d.name) = LOWER(:name)")
+     boolean existsByNameIgnoreCase(@Param("name") String name);
 }

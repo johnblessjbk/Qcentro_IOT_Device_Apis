@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.auth.service.dto.ApiResponse;
+import com.auth.service.util.ErrorMessages;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.security.SignatureException;
@@ -38,7 +39,7 @@ public class GlobalException {
         });
         
         return ResponseEntity.badRequest().body(
-            new ApiResponse<>("error", "Validation failed", errors)
+            new ApiResponse<>("error", ErrorMessages.VALIDATION_FAILD, errors)
         );
     }
 
@@ -52,7 +53,7 @@ public class GlobalException {
         });
         
         return ResponseEntity.badRequest().body(
-            new ApiResponse<>("error", "Constraint violation", errors)
+            new ApiResponse<>("error", ErrorMessages.CONS_VALIDATION, errors)
         );
     }
 
@@ -69,7 +70,13 @@ public class GlobalException {
             new ApiResponse<>("error", ex.getMessage(), null)
         );
     }
-
+    @ExceptionHandler(DuplicateHandlerException.class)
+    public  ResponseEntity<ApiResponse<String>> handleDuplicateUser(DuplicateHandlerException ex) {
+       
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                new ApiResponse<>("error", ex.getMessage(), null)
+            );
+    }
     @ExceptionHandler(KafkaPublishException.class)
     public ResponseEntity<ApiResponse<String>> handleKafkaPublishException(KafkaPublishException ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
@@ -80,7 +87,7 @@ public class GlobalException {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<String>> handleGenericException(Exception ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-            new ApiResponse<>("error", "An unexpected error occurred", null)
+            new ApiResponse<>("error", ex.getMessage(), null)
         );
     }
 }

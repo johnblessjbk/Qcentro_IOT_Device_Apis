@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.auth.service.dto.ApiResponse;
 import com.auth.service.entity.UserRole;
 import com.auth.service.service.AuthService;
+import com.auth.service.util.ErrorMessages;
 
 import jakarta.validation.Valid;
 
@@ -27,15 +29,17 @@ public class AdminController {
 	private AuthService authService;
 
 	@PostMapping("/addRole")
-	public ResponseEntity<?> getUserDetails(@RequestBody @Valid UserRole userRole, BindingResult bindingResult) {
-
-		return ResponseEntity.status(HttpStatus.OK).body(authService.addUserRole(userRole));
+	public ResponseEntity<ApiResponse<String>> getUserDetails(@RequestBody @Valid UserRole userRole, BindingResult bindingResult) {
+		return ResponseEntity.status(HttpStatus.CREATED)
+				.body(new ApiResponse<>("success",ErrorMessages.ROLE_ADDED, null));
 	}
 
 	@PostMapping("/assign-role")
-	public ResponseEntity<String> assignRoleToUser(@RequestParam Long userId, @RequestParam Long roleId) {
+	public ResponseEntity<ApiResponse<String>> assignRoleToUser(@RequestParam Long userId, @RequestParam Long roleId) {
 		authService.assignRoleToUser(userId, roleId);
-		return ResponseEntity.ok("Role assigned successfully");
+		return ResponseEntity.status(HttpStatus.CREATED)
+				.body(new ApiResponse<>("success", ErrorMessages.ROLE_ASSIGN, null));
+
 	}
 	@GetMapping("/role-List")
 	public ResponseEntity<List<UserRole>> getAllRoleList(){

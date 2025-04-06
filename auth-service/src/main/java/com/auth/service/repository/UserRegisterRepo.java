@@ -7,5 +7,6 @@ import com.auth.service.entity.UserRegister;
 
 @Repository
 public interface UserRegisterRepo extends JpaRepository<UserRegister, Long> {
+    boolean existsByUserLogin_Username(String username);
 
 }

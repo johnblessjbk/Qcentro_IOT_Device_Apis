@@ -16,7 +16,9 @@ import com.auth.service.dto.DeviceResponse;
 import com.auth.service.dto.DeviceStatus;
 import com.auth.service.entity.Device;
 import com.auth.service.exceptions.DeviceNotFoundException;
+import com.auth.service.exceptions.DuplicateHandlerException;
 import com.auth.service.repository.DeviceRepository;
+import com.auth.service.util.ErrorMessages;
 
 import lombok.RequiredArgsConstructor;
 
@@ -30,6 +32,9 @@ public class DeviceService {
  private final DeviceRepository deviceRepository;
  private final KafkaService kafkaService;
  public DeviceResponse registerDevice(DeviceDTO deviceDTO) {
+	 if (deviceRepository.existsByNameIgnoreCase(deviceDTO.getName())) {
+		    throw new DuplicateHandlerException(ErrorMessages.DEVICE_EXIST + deviceDTO.getName());
+		}
 	    Device device = new Device();
 	    device.setName(deviceDTO.getName());
 	    device.setStatus(deviceDTO.getStatus());
@@ -72,6 +77,9 @@ public class DeviceService {
  }
 
  public void deleteDevice(UUID id) {
+	 if (!deviceRepository.existsById(id)) {
+	        throw new DeviceNotFoundException(id);
+	    }
      deviceRepository.deleteById(id);
  }
  

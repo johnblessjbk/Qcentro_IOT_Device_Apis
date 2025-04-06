@@ -25,6 +25,7 @@ import com.auth.service.dto.DeviceCommand;
 import com.auth.service.dto.DeviceDTO;
 import com.auth.service.dto.DeviceResponse;
 import com.auth.service.service.DeviceService;
+import com.auth.service.util.ErrorMessages;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
@@ -44,14 +45,13 @@ public class DeviceController {
 		logger.info("Registering new device: {}", deviceDTO.getName());
 		DeviceResponse response = deviceService.registerDevice(deviceDTO);
 		return ResponseEntity.status(HttpStatus.CREATED)
-				.body(new ApiResponse<>("success", "Device registered successfully", response));
+				.body(new ApiResponse<>("success",ErrorMessages.DEVICE_ADD_MSG, response));
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<ApiResponse<DeviceResponse>> getDevice(@PathVariable UUID id) {
-		logger.info("Fetching device with ID: {}", id);
+	public ResponseEntity<ApiResponse<DeviceResponse>> getDevice(@PathVariable UUID id) {	
 		DeviceResponse response = deviceService.getDevice(id);
-		return ResponseEntity.ok(new ApiResponse<>("success", "Device retrieved successfully", response));
+		return ResponseEntity.ok(new ApiResponse<>("success", ErrorMessages.ROLE_RETRIEVED, response));
 	}
 
 	@GetMapping
@@ -60,30 +60,28 @@ public class DeviceController {
 			@RequestParam(defaultValue = "10")  int size,
 			@RequestParam(defaultValue = "lastSeen") String sortBy,
 			@RequestParam(defaultValue = "desc") String sortDir) {
-
 		logger.info("Searching devices - name: {}, page: {}, size: {}, sort: {} {}", name, page, size, sortBy, sortDir);
-
 		Sort.Direction direction = Sort.Direction.fromString(sortDir);
 		Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
 
 		Page<DeviceResponse> result = deviceService.searchDevices(name, pageable);
 
-		return ResponseEntity.ok(new ApiResponse<>("success", "Devices retrieved successfully", result));
+		return ResponseEntity.ok(new ApiResponse<>("success", ErrorMessages.ROLE_RETRIEVED, result));
 	}
 
 	@PutMapping("/{id}")
 	public ResponseEntity<ApiResponse<DeviceResponse>> updateDevice(@PathVariable UUID id,
 			@Valid @RequestBody DeviceDTO deviceDTO) {
-		logger.info("Updating device with ID: {}", id);
+		
 		DeviceResponse response = deviceService.updateDevice(id, deviceDTO);
-		return ResponseEntity.ok(new ApiResponse<>("success", "Device updated successfully", response));
+		return ResponseEntity.ok(new ApiResponse<>("success", ErrorMessages.DEVICE_UPDATE_MSG, response));
 	}
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<ApiResponse<Void>> deleteDevice(@PathVariable UUID id) {
-		logger.info("Deleting device with ID: {}", id);
+		
 		deviceService.deleteDevice(id);
-		return ResponseEntity.ok(new ApiResponse<>("success", "Device deleted successfully", null));
+		return ResponseEntity.ok(new ApiResponse<>("success", ErrorMessages.DEVICE_DEL_MSG, null));
 	}
 
 	@PostMapping("/{id}/send-command")
@@ -91,6 +89,6 @@ public class DeviceController {
 			@Valid @RequestBody DeviceCommand command) {
 		logger.info("Sending command to device {}: {}", id, command.getCommandType());
 		deviceService.sendCommand(id, command);
-		return ResponseEntity.accepted().body(new ApiResponse<>("success", "Command sent to device", null));
+		return ResponseEntity.accepted().body(new ApiResponse<>("success", ErrorMessages.DEVICE_CMD_SEND, null));
 	}
 }

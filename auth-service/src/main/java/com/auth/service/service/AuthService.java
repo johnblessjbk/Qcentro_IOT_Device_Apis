@@ -9,6 +9,7 @@ import com.auth.service.entity.UserLogin;
 import com.auth.service.entity.UserRole;
 import com.auth.service.repository.AuthRepository;
 import com.auth.service.repository.UserRoleRepository;
+import com.auth.service.util.ErrorMessages;
 
 import jakarta.transaction.Transactional;
 
@@ -27,17 +28,16 @@ public class AuthService {
 
 	 public void assignRoleToUser(Long userId, Long roleId) {
 	        UserLogin user = authRepository.findById(userId)
-	            .orElseThrow(() -> new RuntimeException("User not found"));
+	            .orElseThrow(() -> new RuntimeException(ErrorMessages.USER_NOT_FOUND+userId));
 
 	        UserRole role = userRoleRepository.findById(roleId)
-	            .orElseThrow(() -> new RuntimeException("Role not found"));
+	            .orElseThrow(() -> new RuntimeException(ErrorMessages.ROLE_NOT_FOUND+roleId));
 
 	        user.getRoles().add(role);
 	        authRepository.save(user);
 	    }
 
 	public List<UserRole> getAllRoleList() {
-
 	return 	userRoleRepository.findAll();
 	}
 }

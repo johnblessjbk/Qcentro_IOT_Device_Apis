@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.auth.service.dto.ApiResponse;
 import com.auth.service.dto.LoginRequest;
 import com.auth.service.dto.TokenRequest;
 import com.auth.service.entity.UserRegister;
@@ -21,6 +22,7 @@ import com.auth.service.entity.UserRole;
 import com.auth.service.service.AuthService;
 import com.auth.service.service.LoginService;
 import com.auth.service.service.UserRegisterService;
+import com.auth.service.util.ErrorMessages;
 
 import jakarta.validation.Valid;
 
@@ -35,14 +37,14 @@ public class AuthController {
 	private LoginService loginService;
 
 	@PostMapping("/userregister")
-	public ResponseEntity<?> addUserData(@RequestBody @Valid UserRegister user, BindingResult bindingResult) {
+	public ResponseEntity<ApiResponse<String>> addUserData(@RequestBody @Valid UserRegister user, BindingResult bindingResult) {
 		userRegisterService.addUser(user);
-		return ResponseEntity.status(HttpStatus.CREATED).body("added");
+		return ResponseEntity.status(HttpStatus.CREATED)
+				.body(new ApiResponse<>("success",ErrorMessages.USER_ADDED, null));
 	}
 
 	@PostMapping("/login")
 	public ResponseEntity<?> addUserData(@RequestBody LoginRequest user) throws Exception {
-		
 		return ResponseEntity.status(HttpStatus.CREATED).body(loginService.loginUser(user.getUsername(), user.getPassword()));
 	}
 	

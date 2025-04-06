@@ -43,21 +43,16 @@ public class LoginService {
 	public LoginResponse loginUser(String username, String password) throws Exception {
 		authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
 
-		// Load user details
 		final UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
 		// Generate JWT token
 		String jwtToken = jwtTokenUtil.generateToken(userDetails);
 		Date expiryDate = jwtTokenUtil.extractExpiration(jwtToken);
 
-		// Fetch the user from the repository
 		UserLogin userLogin = userLoginRepository.findByUsername(username)
 				.orElseThrow(() -> new Exception("User not found"));
-
-		// Get role names
 		List<String> roles = userLogin.getRoles().stream().map(role -> role.getRolename()).collect(Collectors.toList());
 
-		// Create and return the login response
 		return new LoginResponse(userLogin.getId(), userLogin.getUsername(), jwtToken, roles, expiryDate);
 	}
 }
