@@ -66,13 +66,19 @@ SpringBoot -  Model Version: 4  ,  parent Version:3.3.4
 Setup Instructions
 ----------
 
-1. Clone the Repository
+Setup Instructions
 
-git clone <repository-url>
+Clone the repository:
 
-2. Start Services with Docker Compose
+git clone https://github.com/johnblessjbk/Qcentro_IOT_Device_Apis.git
+
+Start services using Docker Compose:
 
 docker-compose up -d
+
+Access the API documentation:
+
+Swagger UI: http://localhost:8080/swagger-ui.html
 
 This will start:
 
