@@ -80,6 +80,8 @@ Access the API documentation:
 
 Swagger UI: http://localhost:8080/swagger-ui.html
 
+http://localhost:8084/actuator  
+
 This will start:
 
 MySQL database
