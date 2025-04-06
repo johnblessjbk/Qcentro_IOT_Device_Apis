@@ -48,7 +48,7 @@ public class SecurityWebConfig {
 
 	    http.csrf().disable()
 	            .authorizeHttpRequests((requests) -> requests
-	                    .requestMatchers("/auth/authenticate/**", "/v3/api-docs/**", "/swagger-ui/**",
+	                    .requestMatchers("/auth/authenticate/**","/actuator/**", "/v3/api-docs/**", "/swagger-ui/**",
 	                            "/swagger-resources/**", "/webjars/**", "/webjars/swagger-ui/**")
 	                    .permitAll()
 	                    .requestMatchers("/auth/admin/**").hasAuthority("ADMIN")  // Use ROLE_ prefix if necessary

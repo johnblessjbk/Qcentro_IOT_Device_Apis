@@ -51,14 +51,30 @@ security:
   jwt:
     secret-key: 3cfa76ef14937c1c0ea519f8fc057a80fcd04a7420f8e8bcd0a7567c272e007b
     expiration-time: 864000000
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: always  # Show full details unconditionally
+      show-components: always
+    info:
+      enabled: true
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
 
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
+    url: /v3/api-docs
   api-docs:
     path: /v3/api-docs
   show-actuator: true
-
 logging:
   level:
     org.springframework.kafka: INFO
